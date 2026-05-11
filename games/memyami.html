@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>MEMYAMI ULTRA — карточный бой</title>
+    <title>MEMYAMI ULTRA — перебаланс</title>
     <style>
         body {
             background: radial-gradient(circle, #0a0f1f, #03060c);
@@ -15,7 +15,7 @@
             background: #0b1018cc;
             border: 2px solid #ffaa33;
             border-radius: 48px;
-            max-width: 900px;
+            max-width: 700px;
             margin: 20px auto;
             padding: 20px;
         }
@@ -23,52 +23,51 @@
             background: #1a1f2a;
             border: 1px solid #ffaa33;
             border-radius: 24px;
-            padding: 15px;
-            margin: 10px;
-            width: 200px;
+            padding: 12px;
+            margin: 8px;
             display: inline-block;
             cursor: pointer;
             transition: 0.2s;
+            width: 140px;
         }
         .card:hover { background: #2a2f3a; transform: scale(0.98); }
+        button {
+            background: #6a3a1a;
+            border: 1px solid #ffaa33;
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            margin: 10px;
+            color: #ffdd99;
+        }
+        .health {
+            background: #000000aa;
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 30px;
+            margin: 5px;
+            font-size: 1.2em;
+        }
         .boss {
             border: 2px solid #ff6600;
             background: #2a1a0a;
             padding: 15px;
             margin-bottom: 20px;
         }
-        button {
-            background: #6a3a1a;
-            border: 1px solid #ffaa33;
-            padding: 10px 20px;
-            border-radius: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 10px;
-            color: #ffdd99;
-        }
-        .health {
-            font-size: 1.3em;
-            background: #000000aa;
-            display: inline-block;
-            padding: 6px 15px;
-            border-radius: 30px;
-            margin: 5px;
-        }
     </style>
 </head>
 <body>
 <div class="arena">
     <h1>🃏 MEMYAMI ULTRA</h1>
-    <div class="boss" id="bossArea">
+    <div class="boss">
         <div class="health" id="bossHealth">❤️ Босс: 30</div>
-        <div id="bossName">🧠 ТИРАННОЗАВР-ПРОВАЙДЕР</div>
+        <div id="bossName">ТИРАННОЗАВР-ПРОВАЙДЕР</div>
     </div>
     <div class="health" id="playerHealth">❤️ Твои мемы: 20</div>
-    <div id="logArea">Нажми на карту, чтобы атаковать</div>
-    <div class="card" onclick="attack(5)">⚔️ МЕМ-АТАКА (5 ур.)</div>
-    <div class="card" onclick="attack(3)">🔥 КВАНТОВЫЙ ЧИХ (3 ур.)</div>
-    <div class="card" onclick="heal()">🍓 МАЛИНОВОЕ ВАРЕНЬЕ (+4 HP)</div>
+    <div id="logArea">🍓 Варенье лечит, атака бьёт. Победи трёх боссов!</div>
+    <div class="card" onclick="attack(6)">⚔️ МЕМ-АТАКА (6 урона)</div>
+    <div class="card" onclick="attack(4)">🔥 КВАНТОВЫЙ ЧИХ (4 урона)</div>
+    <div class="card" onclick="heal()">🍓 МАЛИНОВОЕ ВАРЕНЬЕ (+5 HP)</div>
     <div class="card" onclick="resetFight()">🌀 НАЧАТЬ ЗАНОВО</div>
     <button onclick="window.location.href='../index.html'">🏡 В ПОРТАЛ</button>
 </div>
@@ -87,7 +86,7 @@
             if (currentBoss + 1 < bosses.length) {
                 currentBoss++;
                 bossHp = bosses[currentBoss].hp;
-                document.getElementById('logArea').innerHTML = `✨ ${bosses[currentBoss-1].name} повержен! Появился ${bosses[currentBoss].name}!`;
+                document.getElementById('logArea').innerHTML = `✨ ${bosses[currentBoss-1].name} повержен! Появился ${bosses[currentBoss].name}! Ты получил +5 здоровья.`;
                 playerHp += 5;
                 updateUI();
             } else {
@@ -102,7 +101,7 @@
         if (bossHp <= 0 || playerHp <= 0) return;
         bossHp -= dmg;
         if (bossHp > 0) {
-            let enemyDmg = Math.floor(Math.random() * 8) + 3;
+            let enemyDmg = Math.floor(Math.random() * 7) + 2; // было 8+3 -> стало 7+2 (меньше)
             playerHp -= enemyDmg;
             document.getElementById('logArea').innerHTML = `🦖 ${bosses[currentBoss].name} атакует и наносит ${enemyDmg} урона!`;
         } else {
@@ -112,13 +111,13 @@
     }
     function heal() {
         if (playerHp <= 0 || bossHp <= 0) return;
-        playerHp += 4;
-        let enemyDmg = Math.floor(Math.random() * 6) + 2;
+        playerHp += 5;
+        let enemyDmg = Math.floor(Math.random() * 5) + 2; // было 6+2 -> стало 5+2
         playerHp -= enemyDmg;
-        document.getElementById('logArea').innerHTML = `🍓 Ты съел варенье (+4), но ${bosses[currentBoss].name} наносит ${enemyDmg} урона.`;
+        document.getElementById('logArea').innerHTML = `🍓 Ты съел варенье (+5), но ${bosses[currentBoss].name} наносит ${enemyDmg} урона.`;
         updateUI();
     }
-    function resetFight() { currentBoss = 0; bossHp = bosses[0].hp; playerHp = 20; updateUI(); document.getElementById('logArea').innerHTML = "Бой начался заново. Бей мемами!"; }
+    function resetFight() { currentBoss = 0; bossHp = bosses[0].hp; playerHp = 20; updateUI(); document.getElementById('logArea').innerHTML = "Бой начался заново. Бей мемами и не забывай лечиться!"; }
     updateUI();
 </script>
 </body>
