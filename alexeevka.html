@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Алексеевка — Квантовая деревня</title>
+    <style>
+        * { user-select: none; box-sizing: border-box; }
+        body {
+            background: #0a1f0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+        }
+        .game-container {
+            background: #2d2a1a;
+            border-radius: 48px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+        canvas {
+            display: block;
+            margin: 0;
+            border-radius: 24px;
+            box-shadow: 0 0 0 6px #b8865c;
+            cursor: pointer;
+        }
+        .ui-panel {
+            margin-top: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .kpk {
+            background: #1e1b14;
+            color: #bada55;
+            padding: 10px 18px;
+            border-radius: 32px;
+            font-size: 14px;
+            border-left: 6px solid #bada55;
+            flex: 2;
+            min-width: 200px;
+            font-weight: bold;
+        }
+        .stats {
+            background: #fef0cf;
+            padding: 8px 20px;
+            border-radius: 32px;
+            font-size: 15px;
+            font-weight: bold;
+            display: flex;
+            gap: 20px;
+        }
+        .quest-panel {
+            background: #2e2a1a;
+            color: #ffecb3;
+            padding: 6px 16px;
+            border-radius: 28px;
+            font-size: 13px;
+            font-weight: bold;
+            text-align: center;
+        }
+        button {
+            background: #b8865c;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 48px;
+            font-weight: bold;
+            font-family: monospace;
+            cursor: pointer;
+            transition: 0.1s linear;
+            font-size: 14px;
+        }
+        button:hover { background: #9b6a42; color: white; transform: scale(0.97);}
+        .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+        .finish-text {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000000cc;
+            backdrop-filter: blur(12px);
+            color: #ffdd44;
+            font-size: 42px;
+            font-weight: bold;
+            font-family: 'Georgia', monospace;
+            padding: 28px 56px;
+            border-radius: 80px;
+            border: 3px solid gold;
+            text-align: center;
+            z-index: 1000;
+            white-space: nowrap;
+            box-shadow: 0 0 50px gold;
+            animation: glow 1s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 5px gold; box-shadow: 0 0 20px gold; }
+            to { text-shadow: 0 0 25px orange; box-shadow: 0 0 50px orange; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <canvas id="gameCanvas" width="1100" height="720"></canvas>
+    <div class="ui-panel">
+        <div class="kpk" id="kpkMessage">📟 КПК ВАСИЛИЙ: Чих! Нажми М — портал в Мемоверс. Q — говорить с жителями.</div>
+        <div class="stats">
+            🪙 <span id="monetki">0</span> &nbsp;|&nbsp;
+            🍓 <span id="malina">0</span> &nbsp;|&nbsp;
+            🐱 <span id="mem">0</span>
+        </div>
+        <div class="controls">
+            <div class="quest-panel" id="questHint">📜 КВЕСТ: Поговори с дедом Серёжей</div>
+            <button id="saveBtn">💾 Сохранить (F5)</button>
+            <button id="memeverseBtn">🌀 ПОРТАЛ (M)</button>
+            <button id="resetBtn" style="background:#6a2a2a;">🔥 СБРОСИТЬ ИГРУ</button>
+            <button id="vestnikBtn">📰 ГАЗЕТА «ВЕСТНИК»</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ------------------------------------------------------------
+    // НАСТРОЙКИ
+    // ------------------------------------------------------------
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const kpkDiv = document.getElementById('kpkMessage');
+    const monSpan = document.getElementById('monetki');
+    const malSpan = document.getElementById('malina');
+    const memSpan = document.getElementById('mem');
+    const questHint = document.getElementById('questHint');
+
+    let player = { x: 550, y: 550, speed: 5 };
+    let cat = { x: 510, y: 550 };
+    const CAT_SPEED = 0.1;
+
+    let hasChip1 = false, hasChip2 = false, hasChip3 = false, hasKey = false;
+    let gameFinished = false;
+    let finishTimer = null;
+
+    let monetki = 0, malina = 0, mem = 0;
+
+    const npcs = [
+        { x: 150, y: 440, name: "Баба Нина", text: "Варенье на столе, внучок!", shop: false },
+        { x: 190, y: 440, name: "Дед Серёжа", chip: 1, dialog: "Держи первый чип!", text: "Коробка сломана, чини!" },
+        { x: 340, y: 440, name: "Лёха", chip: 2, dialog: "Нашёл чертёж!", text: "Садись на велик!" },
+        { x: 510, y: 440, name: "Дед Толя", chip: 3, dialog: "Код 42!", text: "Чертёж коробки у меня" },
+        { x: 680, y: 440, name: "Сергей Вас.", chip: 4, dialog: "Квантовый ключ!", text: "ОПГ в деле!" },
+        { x: 850, y: 440, name: "Тётя Зоя", shop: true, text: "Купи наклейку за монетку!" },
+        { x: 980, y: 440, name: "Кузьмич", quest: true, text: "Принеси 3 малины!" },
+    ];
+
+    let items = [
+        { name: "Монетка", x: 240, y: 520, found: false, icon: "🪙", val: 1 },
+        { name: "Малина", x: 410, y: 520, found: false, icon: "🍓", val: 1 },
+        { name: "Малина", x: 580, y: 520, found: false, icon: "🍓", val: 1 },
+        { name: "Мем", x: 750, y: 520, found: false, icon: "🐱", val: 1 },
+    ];
+
+    function updateUI() { monSpan.innerText = monetki; malSpan.innerText = malina; memSpan.innerText = mem; }
+    function kpkMessage(msg, time = 3000) {
+        kpkDiv.innerHTML = `📟 КПК ВАСИЛИЙ: ${msg}`;
+        if (time) setTimeout(() => { if (kpkDiv.innerHTML.includes(msg)) kpkDiv.innerHTML = "📟 КПК ВАСИЛИЙ: Чих! Q — говорить, M — портал."; }, time);
+    }
+
+    function showFinishMessage() {
+        if (gameFinished) return;
+        gameFinished = true;
+        const div = document.createElement('div');
+        div.className = 'finish-text';
+        div.innerHTML = '✨ АЛЕКСЕЕВКА СПАСЕНА, МЕМОВЕРС ЖДЕТ ✨';
+        document.body.appendChild(div);
+        if (finishTimer) clearTimeout(finishTimer);
+        finishTimer = setTimeout(() => { if(div) div.remove(); }, 5000);
+        kpkMessage("✨ Алексеевка спасена! Мемоверс ждёт.✨", 5000);
+        if (finishTimer) clearTimeout(finishTimer);
+        finishTimer = setTimeout(() => { if(div) div.remove(); }, 5000);
+    }
+
+    function updateQuestHint() {
+        if (gameFinished) {
+            questHint.innerText = "✨ АЛЕКСЕЕВКА СПАСЕНА! МЕМОВЕРС ОТКРЫТ ✨";
+            return;
+        }
+        if (!hasChip1) questHint.innerText = "📜 КВЕСТ: Поговори с дедом Серёжей (в доме бабушки)";
+        else if (!hasChip2) questHint.innerText = "📜 КВЕСТ: Найди Лёху и возьми чертёж";
+        else if (!hasChip3) questHint.innerText = "📜 КВЕСТ: Найди деда Толю (код 42)";
+        else if (!hasKey) questHint.innerText = "📜 КВЕСТ: Поговори с Сергеем Васильевичем (ключ)";
+        else questHint.innerText = "✨ ПОРТАЛ ОТКРЫТ! НАЖМИ M В МЕМОВЕРС ✨";
+    }
+
+    // ------------------------------------------------------------
+    // ГРАФИКА
+    // ------------------------------------------------------------
+    function drawSkyAndClouds() {
+        const grad = ctx.createLinearGradient(0, 0, 0, 400);
+        grad.addColorStop(0, "#c8e4ff");
+        grad.addColorStop(1, "#e0f0c0");
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, 350);
+        ctx.fillStyle = "rgba(255,255,245,0.9)";
+        ctx.shadowBlur = 20; ctx.shadowColor = "white";
+        ctx.beginPath(); ctx.ellipse(150, 60, 50, 35, 0, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(600, 90, 60, 40, 0, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(950, 50, 45, 30, 0, 0, Math.PI*2); ctx.fill();
+        ctx.shadowBlur = 0;
+    }
+    function drawHouse(x, y, name, roofColor = "#b5522a") {
+        ctx.shadowBlur = 8; ctx.shadowColor = "rgba(0,0,0,0.3)";
+        ctx.fillStyle = "#f9e2b0";
+        ctx.fillRect(x, y, 100, 85);
+        ctx.fillStyle = roofColor;
+        ctx.fillRect(x-5, y-12, 110, 14);
+        ctx.fillStyle = "#d49c6f";
+        ctx.fillRect(x+10, y+25, 20, 25);
+        ctx.fillStyle = "#ffd966";
+        ctx.fillRect(x+65, y+35, 15, 20);
+        ctx.fillStyle = "#3a2a1a";
+        ctx.font = "bold 14px Georgia";
+        ctx.fillText(name, x+15, y+82);
+        ctx.strokeStyle = "#8b5a2b";
+        ctx.strokeRect(x, y, 100, 85);
+        ctx.strokeRect(x-5, y-12, 110, 14);
+        ctx.shadowBlur = 0;
+    }
+    function drawPortal() {
+        ctx.shadowBlur = 25; ctx.shadowColor = "#ffcc44";
+        ctx.fillStyle = "#f0b34b";
+        ctx.beginPath(); ctx.arc(550, 150, 35, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = "#ffd966";
+        ctx.beginPath(); ctx.arc(550, 150, 25, 0, Math.PI*2); ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = "#2a2a1a";
+        ctx.font = "bold 14px monospace";
+        ctx.fillText("🌀 ПОРТАЛ В МЕМОВЕРС", 475, 165);
+    }
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawSkyAndClouds();
+        ctx.fillStyle = "#7cb07c";
+        ctx.fillRect(0, 300, canvas.width, 400);
+        ctx.fillStyle = "#9b8e60";
+        ctx.fillRect(0, 520, canvas.width, 42);
+        drawHouse(140, 320, "Баба Нина", "#c04830");
+        drawHouse(310, 320, "Лёха", "#a0a040");
+        drawHouse(480, 320, "Дед Толя", "#c04830");
+        drawHouse(650, 320, "Сергей Вас.", "#7a6a4a");
+        drawHouse(820, 320, "Магазин", "#7a6a4a");
+        drawHouse(950, 320, "Кузьмич", "#7a6a4a");
+        for (let npc of npcs) {
+            ctx.fillStyle = "#ffe0c0";
+            ctx.beginPath(); ctx.arc(npc.x, npc.y, 12, 0, Math.PI*2); ctx.fill();
+            ctx.fillStyle = "#3a2a1a";
+            ctx.font = "bold 10px monospace";
+            ctx.fillText(npc.name, npc.x-18, npc.y-12);
+            ctx.fillStyle = "#4a2a1a";
+            ctx.fillRect(npc.x-5, npc.y+2, 10, 14);
+        }
+        drawPortal();
+        for (let it of items) if (!it.found) { ctx.font = "27px monospace"; ctx.fillText(it.icon, it.x, it.y); }
+        ctx.fillStyle = "#b8a898";
+        ctx.beginPath(); ctx.ellipse(cat.x, cat.y, 15, 12, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = "#6a5a4a";
+        ctx.fillRect(cat.x-13, cat.y-12, 8, 6); ctx.fillRect(cat.x+5, cat.y-12, 8, 6);
+        ctx.fillStyle = "#4a3a2a";
+        ctx.fillRect(cat.x-2, cat.y-4, 4, 5);
+        ctx.fillStyle = "#3a6ea5";
+        ctx.fillRect(player.x-8, player.y-18, 16, 24);
+        ctx.fillStyle = "#ffd2a5";
+        ctx.beginPath(); ctx.arc(player.x, player.y-22, 11, 0, Math.PI*2); ctx.fill();
+    }
+
+    // ------------------------------------------------------------
+    // ЛОГИКА
+    // ------------------------------------------------------------
+    function talkToNPC() {
+        if (gameFinished) {
+            kpkMessage("Мемоверс ждёт! Нажми M, чтобы перейти.");
+            return;
+        }
+        for (let npc of npcs) {
+            if (Math.hypot(player.x - npc.x, player.y - npc.y) < 40) {
+                if (npc.shop && monetki >= 1) { monetki--; mem++; updateUI(); kpkMessage(`Тётя Зоя: Держи наклейку! +1 мем`); }
+                else if (npc.quest && malina >= 3) { malina -= 3; mem += 5; updateUI(); kpkMessage(`Кузьмич: Спасибо за варенье! +5 мемов`); }
+                else if (npc.chip === 1 && !hasChip1) { hasChip1 = true; mem += 10; updateUI(); kpkMessage(`${npc.name}: ${npc.dialog} +10 мемов`); updateQuestHint(); }
+                else if (npc.chip === 2 && hasChip1 && !hasChip2) { hasChip2 = true; mem += 10; updateUI(); kpkMessage(`${npc.name}: ${npc.dialog} +10 мемов`); updateQuestHint(); }
+                else if (npc.chip === 3 && hasChip2 && !hasChip3) { hasChip3 = true; mem += 10; updateUI(); kpkMessage(`${npc.name}: ${npc.dialog} +10 мемов`); updateQuestHint(); }
+                else if (npc.chip === 4 && hasChip3 && !hasKey) {
+                    hasKey = true; mem += 10; updateUI(); kpkMessage(`${npc.name}: ${npc.dialog} +10 мемов`); updateQuestHint();
+                    showFinishMessage();
+                }
+                else kpkMessage(`${npc.name}: ${npc.text}`);
+                return;
+            }
+        }
+    }
+
+    const keys = { KeyW: false, KeyS: false, KeyA: false, KeyD: false };
+    window.addEventListener('keydown', (e) => {
+        if (keys.hasOwnProperty(e.code)) keys[e.code] = true;
+        if (e.code === 'KeyQ') talkToNPC();
+        if (e.code === 'KeyM') {
+            if (hasKey) {
+                window.open('https://catmarsel22890.github.io/memoverce/', '_blank');
+                kpkMessage("🌀 Портал открыт! Ты в Мемоверсе.");
+            } else {
+                kpkMessage("Сначала заверши все квесты! Поговори с Сергеем Васильевичем.");
+            }
+        }
+        if (e.code === 'KeyF') saveGame();
+    });
+    window.addEventListener('keyup', (e) => { if (keys.hasOwnProperty(e.code)) keys[e.code] = false; });
+
+    function saveGame() { localStorage.setItem('alexeevka_save', JSON.stringify({ x: player.x, y: player.y, c1: hasChip1, c2: hasChip2, c3: hasChip3, k: hasKey, mon: monetki, mal: malina, mem: mem, items: items.map(i=>i.found), fin: gameFinished })); kpkMessage("💾 Сохранено!", 1500); }
+    function loadGame() { try { let d = JSON.parse(localStorage.getItem('alexeevka_save')); if(d) { player.x = d.x; player.y = d.y; hasChip1 = d.c1; hasChip2 = d.c2; hasChip3 = d.c3; hasKey = d.k; monetki = d.mon; malina = d.mal; mem = d.mem; d.items.forEach((f,i)=>items[i].found=f); if(d.fin) showFinishMessage(); updateUI(); updateQuestHint(); kpkMessage("💾 Загрузка!"); } } catch(e){} }
+
+    function resetGame() {
+        localStorage.removeItem('alexeevka_save');
+        location.reload();
+    }
+
+    function update() {
+        if (keys.KeyW) player.y -= player.speed;
+        if (keys.KeyS) player.y += player.speed;
+        if (keys.KeyA) player.x -= player.speed;
+        if (keys.KeyD) player.x += player.speed;
+        player.x = Math.min(Math.max(player.x, 60), canvas.width-60);
+        player.y = Math.min(Math.max(player.y, 200), canvas.height-70);
+        let dx = player.x - cat.x, dy = player.y - cat.y;
+        cat.x += dx * CAT_SPEED; cat.y += dy * CAT_SPEED;
+        for (let it of items) if (!it.found && Math.hypot(player.x - it.x, player.y - it.y) < 28) {
+            it.found = true;
+            if (it.icon === "🪙") monetki += it.val;
+            else if (it.icon === "🍓") malina += it.val;
+            else mem += it.val;
+            updateUI(); kpkMessage(`Нашёл ${it.name}! ${it.icon}`, 1200);
+        }
+        draw(); requestAnimationFrame(update);
+    }
+
+    document.getElementById('saveBtn').onclick = saveGame;
+    document.getElementById('memeverseBtn').onclick = () => {
+        if (hasKey) { window.open('https://catmarsel22890.github.io/memoverce/', '_blank'); kpkMessage("🌀 В Мемоверс!"); }
+        else kpkMessage("Сначала заверши квесты и получи ключ от Сергея Васильевича.");
+    };
+    document.getElementById('resetBtn').onclick = resetGame;
+    document.getElementById('vestnikBtn').onclick = () => window.open('vestnik.html', '_blank');
+    
+    loadGame(); updateUI(); updateQuestHint(); update();
+</script>
+</body>
+</html>

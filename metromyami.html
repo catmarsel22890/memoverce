@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>METROMYAMI — Туннели смеха</title>
+    <style>
+        body {
+            background: radial-gradient(circle, #1a1a2a, #03030c);
+            color: #ffcc77;
+            font-family: monospace;
+            text-align: center;
+            padding: 20px;
+        }
+        .station {
+            background: #0b1018cc;
+            border: 2px solid #ffaa33;
+            border-radius: 48px;
+            max-width: 700px;
+            margin: auto;
+            padding: 20px;
+        }
+        button {
+            background: #6a3a1a;
+            border: 1px solid #ffaa33;
+            padding: 12px 24px;
+            border-radius: 40px;
+            margin: 10px;
+            cursor: pointer;
+            color: #ffdd99;
+        }
+        .ending {
+            background: #2a1a0a;
+            border: 1px solid #ffaa33;
+            border-radius: 30px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="station">
+    <h1>📟 METROMYAMI</h1>
+    <div id="story">🚇 Ты спускаешься в Туннели Смеха... Акт 1 из 10.</div>
+    <div id="actDesc">Туннель освещён квантовыми гифками. Варенье в рюкзаке.</div>
+    <div id="choiceArea">
+        <button onclick="makeChoice(1)">➡️ ИДТИ ВПЕРЁД</button>
+        <button onclick="makeChoice(2)">🧭 СВЕРНУТЬ В ТЕМНЫЙ ТОННЕЛЬ</button>
+        <button onclick="makeChoice(3)">🍓 СЪЕСТЬ ВАРЕНЬЕ И ОТДОХНУТЬ</button>
+    </div>
+    <button onclick="resetGame()">🌀 НАЧАТЬ ЗАНОВО</button>
+    <button onclick="window.location.href='../index.html'">🏡 В ПОРТАЛ</button>
+    <div id="log"></div>
+</div>
+<script>
+    let act = 1;
+    let playerHp = 10;
+    let ending = 0;
+    function updateUI() {
+        if (ending) return;
+        document.getElementById('story').innerHTML = `🚇 METROMYAMI — Акт ${act} из 10. Здоровье: ❤️ ${playerHp}`;
+        if (act === 1) document.getElementById('actDesc').innerHTML = "Перед твой развилка. Один путь светится мемами, другой — уходит в темноту.";
+        else if (act === 5) document.getElementById('actDesc').innerHTML = "🔊 В темноте слышен чих. Это Василий! Он даёт тебе банку варенья. +3 здоровья.";
+        else if (act === 8) document.getElementById('actDesc').innerHTML = "☢️ Радиация баянов! Теряешь 2 здоровья.";
+        else document.getElementById('actDesc').innerHTML = "Ты движешься по туннелям Мемоверса. Впереди новые испытания.";
+    }
+    function makeChoice(choice) {
+        if (ending) return;
+        if (act >= 10) {
+            if (playerHp > 5 && !ending) {
+                ending = 1;
+                document.getElementById('choiceArea').style.display = 'none';
+                document.getElementById('story').innerHTML = "✨ ХОРОШАЯ КОНЦОВКА: Ты выбрался из Туннелей Смеха и спас Мемоверс. Алексеевка празднует! ✨";
+            } else if (!ending) {
+                ending = 2;
+                document.getElementById('choiceArea').style.display = 'none';
+                document.getElementById('story').innerHTML = "💀 ПЛОХАЯ КОНЦОВКА: Ты не выдержал радиации баянов. Мемоверс погружается в хаос. 💀";
+            }
+            return;
+        }
+        if (choice === 1) { act++; playerHp += 2; document.getElementById('log').innerHTML = "✅ Ты прошёл вперёд. Мемы поддержали тебя. +2 здоровья."; }
+        else if (choice === 2) { act++; playerHp -= 1; document.getElementById('log').innerHTML = "⚠️ Тёмный тоннель оказался опасным. -1 здоровье."; }
+        else if (choice === 3) { act++; playerHp += 3; document.getElementById('log').innerHTML = "🍓 Варенье придало сил! +3 здоровья."; }
+        if (playerHp <= 0) { playerHp = 0; ending = 2; document.getElementById('choiceArea').style.display = 'none'; document.getElementById('story').innerHTML = "💀 Ты не выжил в Туннелях. Мемоверс потерял героя..."; }
+        updateUI();
+        if (act >= 10 && playerHp > 5 && !ending) makeChoice();
+        else if (act >= 10 && playerHp <= 5 && !ending) makeChoice();
+    }
+    function resetGame() { act = 1; playerHp = 10; ending = 0; document.getElementById('choiceArea').style.display = 'block'; document.getElementById('log').innerHTML = ""; updateUI(); document.getElementById('story').innerHTML = "🚇 Ты снова спускаешься в Туннели Смеха... Акт 1 из 10."; }
+    updateUI();
+</script>
+</body>
+</html>

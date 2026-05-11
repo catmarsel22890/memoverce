@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Алексеевский вестник — полный выпуск</title>
+    <style>
+        body {
+            background: #e8d9b0;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            padding: 40px 20px;
+            margin: 0;
+        }
+        .newspaper {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fef7e0;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid #c4a27a;
+        }
+        h1 {
+            text-align: center;
+            font-size: 58px;
+            margin: 0;
+            color: #7a3e1c;
+            border-bottom: 3px double #b8865c;
+            padding-bottom: 10px;
+        }
+        .subhead {
+            text-align: center;
+            font-size: 16px;
+            margin-top: 8px;
+            color: #6b4c3c;
+            font-style: italic;
+        }
+        .date {
+            text-align: center;
+            font-size: 14px;
+            margin: 15px 0 30px;
+            color: #6b4c3c;
+            border-top: 1px solid #d4b87a;
+            padding-top: 8px;
+        }
+        .map-container {
+            margin: 30px 0;
+            border: 3px solid #b8865c;
+            background: #fff8e7;
+            padding: 15px;
+            text-align: center;
+        }
+        iframe {
+            width: 100%;
+            height: 450px;
+            border: none;
+        }
+        .columns {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .column {
+            flex: 1;
+            border-right: 1px solid #d4b87a;
+            padding-right: 25px;
+        }
+        .column:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+        .achievement {
+            background: #efe3c9;
+            padding: 12px;
+            margin: 15px 0;
+            border-left: 5px solid #b8865c;
+            font-size: 14px;
+        }
+        .quote {
+            font-style: italic;
+            color: #4a2a1a;
+            margin: 20px 0;
+            padding-left: 15px;
+            border-left: 3px solid #b8865c;
+        }
+        .artifact {
+            background: #f2e5c9;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px dashed #b8865c;
+        }
+        .joke {
+            background: #fff2df;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 12px;
+        }
+        h2 {
+            color: #7a3e1c;
+            font-size: 24px;
+            border-left: 5px solid #b8865c;
+            padding-left: 12px;
+        }
+        a {
+            color: #7a3e1c;
+            text-decoration: none;
+            border-bottom: 1px dotted #7a3e1c;
+        }
+        .footer {
+            margin-top: 40px;
+            border-top: 1px solid #d4b87a;
+            text-align: center;
+            font-size: 13px;
+            padding-top: 20px;
+            color: #6b4c3c;
+        }
+        @media (max-width: 800px) {
+            .columns {
+                flex-direction: column;
+            }
+            .column {
+                border-right: none;
+                padding-right: 0;
+            }
+            iframe {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="newspaper">
+    <h1>Алексеевский вестник</h1>
+    <div class="subhead">Голос деревни. Без цензуры, но с любовью к варенью.</div>
+    <div class="date">Выпуск №1 | Пятница, время малинового варенья</div>
+
+    <!-- ИНТЕРАКТИВНАЯ КАРТА -->
+    <div class="map-container">
+        <h3>🗺️ Карта Алексеевки (живая, работает!)</h3>
+        <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3A7c26166b61410bbd5809023567b41a0ea99cf491d7d06f3dcc2c3f23443e825c&amp;source=constructor"></iframe>
+        <p><small>Кликни по карте, чтобы приблизить. Здесь отмечены все ключевые места: дом Бабы Нины, дом Лёхи, карьер, поляна.</small></p>
+    </div>
+
+    <div class="columns">
+        <!-- ЛЕВАЯ КОЛОНКА: НОВОСТИ, ШУТКИ, АРТЕФАКТЫ -->
+        <div class="column">
+            <h2>🏆 Марсель возглавил ОПГ</h2>
+            <p>В результате внеплановой ревизии квантовой коробки выяснилось, что <strong>Марсель</strong> (серый кот, 14 лет, хвост трубой) всё это время имел доступ к архиву мемов 2017 года. На вопрос «кто главный мем-лоуд» Марсель мяукнул басом, выпил полбанки варенья и гордо занял пост главы ОПГ.</p>
+            <div class="quote">«Я всегда знала, что этот кот не простой. Котёнком он в банку с вареньем залез и оттуда на нас смотрел… Теперь понятно — к власти готовился.» — <strong>Баба Нина</strong></div>
+
+            <h2>😂 Шутка дня (от бабы Зои)</h2>
+            <div class="joke">
+                — Почему Марсель не играет в компьютерные игры?<br>
+                — Потому что для победы ему нужны не мемы, а банка варенья.
+            </div>
+
+            <h2>📜 Артефакт эпохи «Чистый HTML»</h2>
+            <p>В ходе архивных раскопок обнаружена <strong>первая страница вселенной MEMOVERSE</strong> — древний свиток, написанный на чистом HTML. Хранитель артефакта — кошачья лапа.</p>
+            <div class="artifact">
+                🔗 Реликвия доступна по ссылке:<br>
+                <strong><a href="https://catmarsel22890.github.io/memoverce/" target="_blank">catmarsel22890.github.io/memoverce</a></strong><br>
+                <span style="font-size: 12px;">(Открывать с банкой варенья. Чихать разрешается)</span>
+            </div>
+        </div>
+
+        <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА: ДОСТИЖЕНИЯ + ИНТЕРВЬЮ -->
+        <div class="column">
+            <h2>🏅 Достижения Алексеевки</h2>
+            <div class="achievement"><strong>🥫 Больше всего банок варенья открыто:</strong> 14 банок (за один присест) — <strong>Марсель</strong></div>
+            <div class="achievement"><strong>🚶‍♂️🚶‍♂️ Больше всего совместных прогулок по Алексеевке:</strong> рекорд, который не сбить ни одним питбайком — <strong>Лёха и Артём</strong></div>
+            <div class="achievement"><strong>⏱️ Самое долгое зависание в Мемоверсе:</strong> 3 часа 20 минут — <strong>Артём</strong> (пока Баба Нина не позвала ужинать)</div>
+            <div class="achievement"><strong>🤧 Самый громкий чих Василия:</strong> 82 децибела (соседская собака проснулась) — <strong>КПК Василий</strong></div>
+            <div class="achievement"><strong>📀 Самая старая гифка в коробке:</strong> «Танцующий динозавр» (2017 год) — <strong>Дед Серёжа</strong></div>
+
+            <h2>🗣️ Интервью номера</h2>
+            <div class="quote">«Самый важный чертёж — схема подключения мемов к варенью. Без неё коробка — просто железка, а с ней — наша история.» — <strong>Дед Толя</strong></div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: ОБЪЯВЛЕНИЯ И ВСЕЛЕННАЯ -->
+        <div class="column">
+            <h2>📬 Объявления от жителей</h2>
+            <div class="achievement"><strong>🏪 Баба Зоя:</strong> «В магазине свежее варенье. Кот уже опробовал — одобрил. Заходите без очереди, Марсель нервный.»</div>
+            <div class="achievement"><strong>🔧 Дед Серёжа:</strong> «Старый паяльник продаётся. Подойдёт для ремонта квантовой коробки. Цена: одна шутка дня (или анекдот про кота).»</div>
+            <div class="achievement"><strong>🍲 Баба Нина:</strong> «Варенье свежее, малиновое. Кот уже пробовал, на ужин будет картошка с котлетой. Кому не спится — велкам.»</div>
+            <div class="achievement"><strong>🏍️ Леха:</strong> «Прокачу до карьера, пока кот не видит. С собой иметь банку варенья (для молчания).»</div>
+
+            <h2>🌌 Наша вселенная</h2>
+            <p><strong>Алексеевка — не просто игра, а живой мир, где:</strong></p>
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li>🐱 кот управляет ОПГ,</li>
+                <li>📦 квантовая коробка жужжит в подвале,</li>
+                <li>💾 мемы 2017 года всё ещё чихают,</li>
+                <li>🍓 малиновое варенье лечит любые баги.</li>
+            </ul>
+            <p>У нас есть <strong>КПК Василий, карьер, лес, поляна</strong> и целая вселенная, где даже старый HTML становится артефактом. И мы не собираемся останавливаться.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        «Алексеевский вестник» — только варенье, мемы, рекорды и неспешные деревенские новости.<br>
+        Главный редактор — <strong>Марсель</strong> (14 лет, хвост трубой). Тираж — один экземпляр, зато в надёжных лапах.<br>
+        Подписаться можно у бабы Зои в магазине, за банкой варенья.
+    </div>
+</div>
+
+</body>
+</html>

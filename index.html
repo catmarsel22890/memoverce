@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEMOVERSE — портал в игры</title>
+    <style>
+        * { user-select: none; box-sizing: border-box; }
+        body {
+            background: radial-gradient(circle at 20% 30%, #0a0a2a, #010101);
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            padding: 30px 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .portal {
+            background: #0b1018cc;
+            backdrop-filter: blur(8px);
+            border: 2px solid #ffaa33;
+            border-radius: 64px;
+            padding: 30px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+            box-shadow: 0 0 40px rgba(255, 170, 51, 0.5);
+        }
+        h1 {
+            font-size: 4.2em;
+            text-shadow: 0 0 15px #ffaa33, 0 0 30px #ff8800;
+            margin: 0;
+            color: #ffaa33;
+            animation: pulseOrange 1.8s infinite alternate;
+        }
+        @keyframes pulseOrange {
+            from { text-shadow: 0 0 5px #ffaa33; }
+            to { text-shadow: 0 0 25px #ff6600; }
+        }
+        .sub {
+            font-style: italic;
+            color: #ffbb66;
+            border-bottom: 1px dashed #ffaa33;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .game-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        .card {
+            background: #0a0f1a;
+            border: 2px solid #ffaa33;
+            border-radius: 40px;
+            padding: 24px 16px;
+            width: 210px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+            color: #ffcc77;
+            box-shadow: 0 0 12px rgba(255,170,51,0.3);
+        }
+        .card:hover {
+            background: #1a3a2a;
+            transform: scale(1.02);
+            box-shadow: 0 0 28px #ffaa33;
+        }
+        .card-icon { font-size: 56px; display: block; margin-bottom: 12px; }
+        .card-title {
+            font-weight: bold;
+            font-size: 1.4em;
+            margin: 8px 0;
+            color: #ffaa33;
+            text-shadow: 0 0 6px #ff8800;
+        }
+        .card-desc { font-size: 12px; opacity: 0.9; color: #ffdd99; }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px;
+            margin: 20px 0;
+        }
+        button {
+            background: #6a3a1a;
+            border: 1px solid #ffaa33;
+            font-size: 1.2em;
+            padding: 12px 28px;
+            border-radius: 80px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #ffdd99;
+            transition: 0.1s;
+        }
+        button:hover {
+            background: #9b6a42;
+            transform: scale(0.97);
+            box-shadow: 0 0 16px #ffaa33;
+        }
+        .kpk {
+            background: #000000aa;
+            border-left: 6px solid #ffaa33;
+            padding: 14px 18px;
+            text-align: left;
+            margin-top: 35px;
+            border-radius: 20px;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            color: #ffcc88;
+        }
+        .footer-links {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            font-size: 13px;
+        }
+        .footer-links a {
+            color: #ffaa66;
+            text-decoration: none;
+            border-bottom: 1px dotted #ffaa33;
+        }
+        @media (max-width: 700px) {
+            h1 { font-size: 2.5em; }
+            .card { width: 160px; padding: 16px; }
+            button { padding: 8px 18px; font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+<div class="portal">
+    <h1>🐱 MEMOVERSE 2.0</h1>
+    <div class="sub">«Портал в наши игры. Квантовый код 42.»</div>
+
+    <div class="game-grid">
+        <!-- MEMYAMI ULTRA (путь games/memyami.html) -->
+        <div class="card" onclick="window.location.href='games/memyami.html'">
+            <span class="card-icon">🃏⚔️</span>
+            <div class="card-title">MEMYAMI ULTRA</div>
+            <div class="card-desc">Карточный бой, 3 босса</div>
+        </div>
+        <!-- LOGISTICS -->
+        <div class="card" onclick="window.location.href='games/logistics.html'">
+            <span class="card-icon">🚛💨</span>
+            <div class="card-title">LOGISTICS</div>
+            <div class="card-desc">Рейсы, топливо, прокачка</div>
+        </div>
+        <!-- METROMYAMI -->
+        <div class="card" onclick="window.location.href='games/metromyami.html'">
+            <span class="card-icon">📟💀</span>
+            <div class="card-title">METROMYAMI</div>
+            <div class="card-desc">10 актов, 2 концовки</div>
+        </div>
+    </div>
+
+    <div class="button-group">
+        <button onclick="window.location.href='alexeevka.html'">🏡 В АЛЕКСЕЕВКУ</button>
+        <button onclick="window.open('vestnik.html', '_blank')">📰 АЛЕКСЕЕВСКИЙ ВЕСТНИК</button>
+        <button onclick="location.reload()">🌀 ОБНОВИТЬ ПОРТАЛ</button>
+    </div>
+
+    <div class="kpk" id="kpkMessage">
+        📟 КПК ВАСИЛИЙ: Чих! Нажми на карточку игры, чтобы начать. Алексеевка и газета тоже доступны.
+    </div>
+
+    <div class="footer-links">
+        <a href="#" id="creditsLink">⚙️ КВАНТОВЫЙ КОД 42</a>
+        <a href="#" id="opgLink">🕵️ ОПГ «АЛЕКСЕЕВСКОЕ»</a>
+    </div>
+</div>
+<script>
+    document.getElementById('creditsLink').onclick = (e) => {
+        e.preventDefault();
+        document.getElementById('kpkMessage').innerHTML = `📟 КПК ВАСИЛИЙ: Квантовый код 42 — это число, открывающее портал. Оно встречается в чертежах деда Толи и в каждой банке варенья. «Ответ на главный вопрос жизни, вселенной и мемов».`;
+    };
+    document.getElementById('opgLink').onclick = (e) => {
+        e.preventDefault();
+        document.getElementById('kpkMessage').innerHTML = `📟 КПК ВАСИЛИЙ: ОПГ «АЛЕКСЕЕВСКОЕ» — основана в 90-х. В неё входят: Баба Нина, дед Серёжа, дед Толя, Сергей Васильевич и кот Марсель. Цель — сохранять мемы и защищать квантовую коробку.`;
+    };
+</script>
+</body>
+</html>

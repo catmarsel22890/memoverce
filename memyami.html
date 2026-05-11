@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>MEMYAMI ULTRA — карточный бой</title>
+    <style>
+        body {
+            background: radial-gradient(circle, #0a0f1f, #03060c);
+            color: #ffcc77;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            padding: 20px;
+        }
+        .arena {
+            background: #0b1018cc;
+            border: 2px solid #ffaa33;
+            border-radius: 48px;
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .card {
+            background: #1a1f2a;
+            border: 1px solid #ffaa33;
+            border-radius: 24px;
+            padding: 15px;
+            margin: 10px;
+            width: 200px;
+            display: inline-block;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .card:hover { background: #2a2f3a; transform: scale(0.98); }
+        .boss {
+            border: 2px solid #ff6600;
+            background: #2a1a0a;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #6a3a1a;
+            border: 1px solid #ffaa33;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            color: #ffdd99;
+        }
+        .health {
+            font-size: 1.3em;
+            background: #000000aa;
+            display: inline-block;
+            padding: 6px 15px;
+            border-radius: 30px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="arena">
+    <h1>🃏 MEMYAMI ULTRA</h1>
+    <div class="boss" id="bossArea">
+        <div class="health" id="bossHealth">❤️ Босс: 30</div>
+        <div id="bossName">🧠 ТИРАННОЗАВР-ПРОВАЙДЕР</div>
+    </div>
+    <div class="health" id="playerHealth">❤️ Твои мемы: 20</div>
+    <div id="logArea">Нажми на карту, чтобы атаковать</div>
+    <div class="card" onclick="attack(5)">⚔️ МЕМ-АТАКА (5 ур.)</div>
+    <div class="card" onclick="attack(3)">🔥 КВАНТОВЫЙ ЧИХ (3 ур.)</div>
+    <div class="card" onclick="heal()">🍓 МАЛИНОВОЕ ВАРЕНЬЕ (+4 HP)</div>
+    <div class="card" onclick="resetFight()">🌀 НАЧАТЬ ЗАНОВО</div>
+    <button onclick="window.location.href='../index.html'">🏡 В ПОРТАЛ</button>
+</div>
+<script>
+    let bossHp = 30, playerHp = 20;
+    let currentBoss = 0;
+    const bosses = [
+        { name: "ТИРАННОЗАВР-ПРОВАЙДЕР", hp: 30 },
+        { name: "ТРИЦЕРАТОПС-СКЕПТИК", hp: 35 },
+        { name: "ПТЕРОДАКТИЛЬ-ПЕРЕПОСТ", hp: 40 }
+    ];
+    function updateUI() {
+        document.getElementById('bossHealth').innerHTML = `❤️ ${bosses[currentBoss].name}: ${bossHp}`;
+        document.getElementById('playerHealth').innerHTML = `❤️ Твои мемы: ${playerHp}`;
+        if (bossHp <= 0) {
+            if (currentBoss + 1 < bosses.length) {
+                currentBoss++;
+                bossHp = bosses[currentBoss].hp;
+                document.getElementById('logArea').innerHTML = `✨ ${bosses[currentBoss-1].name} повержен! Появился ${bosses[currentBoss].name}!`;
+                playerHp += 5;
+                updateUI();
+            } else {
+                document.getElementById('logArea').innerHTML = `🎉 ПОБЕДА! Все боссы повержены. Мемы сохранены. Квантовая коробка стабильна.`;
+                document.getElementById('bossHealth').innerHTML = `❤️ ПОБЕДА!`;
+            }
+        } else if (playerHp <= 0) {
+            document.getElementById('logArea').innerHTML = `💀 Ты проиграл. Мемы исчезли. Начни заново.`;
+        }
+    }
+    function attack(dmg) {
+        if (bossHp <= 0 || playerHp <= 0) return;
+        bossHp -= dmg;
+        if (bossHp > 0) {
+            let enemyDmg = Math.floor(Math.random() * 8) + 3;
+            playerHp -= enemyDmg;
+            document.getElementById('logArea').innerHTML = `🦖 ${bosses[currentBoss].name} атакует и наносит ${enemyDmg} урона!`;
+        } else {
+            document.getElementById('logArea').innerHTML = `✨ Ты победил ${bosses[currentBoss].name}!`;
+        }
+        updateUI();
+    }
+    function heal() {
+        if (playerHp <= 0 || bossHp <= 0) return;
+        playerHp += 4;
+        let enemyDmg = Math.floor(Math.random() * 6) + 2;
+        playerHp -= enemyDmg;
+        document.getElementById('logArea').innerHTML = `🍓 Ты съел варенье (+4), но ${bosses[currentBoss].name} наносит ${enemyDmg} урона.`;
+        updateUI();
+    }
+    function resetFight() { currentBoss = 0; bossHp = bosses[0].hp; playerHp = 20; updateUI(); document.getElementById('logArea').innerHTML = "Бой начался заново. Бей мемами!"; }
+    updateUI();
+</script>
+</body>
+</html>

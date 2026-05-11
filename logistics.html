@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>LOGISTICS — дальнобойщики Мемоверса</title>
+    <style>
+        body {
+            background: radial-gradient(circle, #0a2a0a, #020a02);
+            color: #ffcc77;
+            font-family: monospace;
+            text-align: center;
+            padding: 20px;
+        }
+        .game {
+            background: #0b1018cc;
+            border: 2px solid #ffaa33;
+            border-radius: 48px;
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+        }
+        button {
+            background: #6a3a1a;
+            border: 1px solid #ffaa33;
+            padding: 10px 20px;
+            border-radius: 40px;
+            margin: 8px;
+            cursor: pointer;
+            color: #ffdd99;
+        }
+        .stat {
+            background: #000000aa;
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 30px;
+            margin: 8px;
+            font-size: 1.2em;
+        }
+        .route {
+            background: #1a1f2a;
+            border: 1px solid #ffaa33;
+            border-radius: 30px;
+            padding: 10px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="game">
+    <h1>🚛 LOGISTICS</h1>
+    <div class="stat">⛽ Топливо: <span id="fuel">100</span> л</div>
+    <div class="stat">💰 Мем-монеты: <span id="money">50</span></div>
+    <div class="stat">📦 Доставлено: <span id="delivered">0</span></div>
+    <div class="route" id="routeInfo">🚚 Маршрут: Деревня → Карьер → Лес</div>
+    <button onclick="doRide()">🚛 ВЫПОЛНИТЬ РЕЙС (тратит 20 топлива, даёт 30 монет)</button>
+    <button onclick="refuel()">🍓 ЗАПРАВИТЬСЯ ВАРЕНЬЕМ (+30 топлива, тратит 10 монет)</button>
+    <button onclick="upgrade()">🔧 ПРОКАЧКА ГРУЗОВИКА (тратит 50 монет, +10 к доходу)</button>
+    <button onclick="window.location.href='../index.html'">🏡 В ПОРТАЛ</button>
+    <div id="logMsg" style="margin-top:20px;">📡 КПК ВАСИЛИЙ: Чих! Вези мемы, заправляйся вареньем.</div>
+</div>
+<script>
+    let fuel = 100, money = 50, delivered = 0, bonus = 0;
+    function updateUI() {
+        document.getElementById('fuel').innerText = fuel;
+        document.getElementById('money').innerText = money;
+        document.getElementById('delivered').innerText = delivered;
+    }
+    function doRide() {
+        if (fuel < 20) { document.getElementById('logMsg').innerText = "❌ Не хватает топлива! Заправься вареньем."; return; }
+        fuel -= 20;
+        let earn = 30 + bonus;
+        money += earn;
+        delivered++;
+        document.getElementById('logMsg').innerHTML = `✅ Рейс выполнен! +${earn} мем-монет. Доставлено: ${delivered} рейсов.`;
+        if (Math.random() < 0.2) { money += 15; document.getElementById('logMsg').innerHTML += ` 🎁 Бонус! На дороге нашли канистру с бензином (+15 монет).`; }
+        updateUI();
+    }
+    function refuel() {
+        if (money < 10) { document.getElementById('logMsg').innerText = "❌ Не хватает монет на варенье!"; return; }
+        money -= 10;
+        fuel += 30;
+        document.getElementById('logMsg').innerHTML = `🍓 Ты заправился вареньем! +30 топлива.`;
+        updateUI();
+    }
+    function upgrade() {
+        if (money < 50) { document.getElementById('logMsg').innerText = "❌ Не хватает монет для прокачки!"; return; }
+        money -= 50;
+        bonus += 10;
+        document.getElementById('logMsg').innerHTML = `🔧 Грузовик прокачан! Теперь каждый рейс приносит +${bonus} монет.`;
+        updateUI();
+    }
+    updateUI();
+</script>
+</body>
+</html>
