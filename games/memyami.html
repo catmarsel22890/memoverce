@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>MEMYAMI ULTRA — перебаланс</title>
+    <title>MEMYAMI ULTRA — 35 HP</title>
     <style>
         body {
             background: radial-gradient(circle, #0a0f1f, #03060c);
@@ -63,8 +63,8 @@
         <div class="health" id="bossHealth">❤️ Босс: 30</div>
         <div id="bossName">ТИРАННОЗАВР-ПРОВАЙДЕР</div>
     </div>
-    <div class="health" id="playerHealth">❤️ Твои мемы: 20</div>
-    <div id="logArea">🍓 Варенье лечит, атака бьёт. Победи трёх боссов!</div>
+    <div class="health" id="playerHealth">❤️ Твои мемы: 35</div>
+    <div id="logArea">🍓 Варенье лечит (+5), атака бьёт (6/4). Победи трёх боссов!</div>
     <div class="card" onclick="attack(6)">⚔️ МЕМ-АТАКА (6 урона)</div>
     <div class="card" onclick="attack(4)">🔥 КВАНТОВЫЙ ЧИХ (4 урона)</div>
     <div class="card" onclick="heal()">🍓 МАЛИНОВОЕ ВАРЕНЬЕ (+5 HP)</div>
@@ -72,7 +72,7 @@
     <button onclick="window.location.href='../index.html'">🏡 В ПОРТАЛ</button>
 </div>
 <script>
-    let bossHp = 30, playerHp = 20;
+    let bossHp = 30, playerHp = 35;
     let currentBoss = 0;
     const bosses = [
         { name: "ТИРАННОЗАВР-ПРОВАЙДЕР", hp: 30 },
@@ -101,7 +101,7 @@
         if (bossHp <= 0 || playerHp <= 0) return;
         bossHp -= dmg;
         if (bossHp > 0) {
-            let enemyDmg = Math.floor(Math.random() * 7) + 2; // было 8+3 -> стало 7+2 (меньше)
+            let enemyDmg = Math.floor(Math.random() * 7) + 2;
             playerHp -= enemyDmg;
             document.getElementById('logArea').innerHTML = `🦖 ${bosses[currentBoss].name} атакует и наносит ${enemyDmg} урона!`;
         } else {
@@ -112,12 +112,12 @@
     function heal() {
         if (playerHp <= 0 || bossHp <= 0) return;
         playerHp += 5;
-        let enemyDmg = Math.floor(Math.random() * 5) + 2; // было 6+2 -> стало 5+2
+        let enemyDmg = Math.floor(Math.random() * 5) + 2;
         playerHp -= enemyDmg;
         document.getElementById('logArea').innerHTML = `🍓 Ты съел варенье (+5), но ${bosses[currentBoss].name} наносит ${enemyDmg} урона.`;
         updateUI();
     }
-    function resetFight() { currentBoss = 0; bossHp = bosses[0].hp; playerHp = 20; updateUI(); document.getElementById('logArea').innerHTML = "Бой начался заново. Бей мемами и не забывай лечиться!"; }
+    function resetFight() { currentBoss = 0; bossHp = bosses[0].hp; playerHp = 35; updateUI(); document.getElementById('logArea').innerHTML = "Бой начался заново. 35 HP — теперь ты крепче!"; }
     updateUI();
 </script>
 </body>
